@@ -15,17 +15,17 @@ class LoadSignals():
         pass
 
     def load_signals(self, data_path, class_id):
+        all_signals = []
         filenames = os.listdir(data_path)
         for filename in filenames:
             if filename.find('wav') == -1:
-                print (filename)
+                print ("Skipped not .wav file {}".format(filename).encode('utf-8'))
                 continue
             full_file_name = data_path +  '/' + filename
-            signal_id = (int) (filename.split('-')[1])
+            signal_id = (int) (filename.split('-')[0])
             rate_data = scipy.io.wavfile.read(full_file_name)
-            new_signal = Signal(signal_id, class_id, rate_data[0], rate_data[1])
-            print (new_signal)
-
+            all_signals.append(Signal(signal_id, class_id, rate_data[0], rate_data[1]))
+        return all_signals
 if __name__ == "__main__":
     test_load_singnal = LoadSignals()
     test_load_singnal.load_signals('/home/vsevolod/IBS_data/IBS_true', 2)
