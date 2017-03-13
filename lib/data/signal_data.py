@@ -1,7 +1,7 @@
 class Signal:
     """Class for signals"""
 
-    def __init__(self, signal_id, class_id, data, sample_rate, patient_id=None):
+    def __init__(self, signal_id, class_id, data, sample_rate, patient_id=None, max_trans_size=10):
         self.signal_id = signal_id
         self.class_id = class_id
         self.sample_rate = sample_rate
