@@ -24,8 +24,10 @@ class LoadSignals():
             full_file_name = data_path +  '/' + filename
             signal_id = (int) (filename.split('-')[0])
             rate_data = scipy.io.wavfile.read(full_file_name)
-            all_signals.append(Signal(signal_id, class_id, rate_data[0], rate_data[1]))
+            all_signals.append(Signal(signal_id, class_id, rate_data[1], rate_data[0]))
         return all_signals
+
+
 if __name__ == "__main__":
     test_load_singnal = LoadSignals()
     test_load_singnal.load_signals('/home/vsevolod/IBS_data/IBS_true', 2)
