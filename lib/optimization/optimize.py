@@ -15,7 +15,6 @@ class SimpleGreedyOptimizer():
         #Choose best agregate function
         all_target = np.array([i.get_class() for i in all_signals])
         best_score = float('inf')
-        #best_agg_fun = start_func
         for new_agg in self.agg_functions:
             new_featute =  np.array([i.evaluate_ext([], new_agg) for i in all_signals])
             new_score = self.qual_measure.basic_quality(all_target, new_featute)
