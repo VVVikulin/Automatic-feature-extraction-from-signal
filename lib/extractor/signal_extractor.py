@@ -6,6 +6,8 @@ from preprocessor.data_load import LoadSignals
 from optimization.optimize import SimpleGreedyOptimizer
 import numpy as np
 from scipy.signal import medfilt,  detrend
+
+
 class QualityMeasure():
     """Class which measure quality of features"""
 
@@ -34,7 +36,6 @@ class QualityMeasure():
         return sum([sum(sorted_vector[0:i] > sorted_vector[i]) for i in range(0, len(sorted_vector))]) / all_pairs
 
 
-
 class Function():
     """Wraper class for funcions"""
 
@@ -48,7 +49,6 @@ class Function():
 
     def __repr__(self):
         return self.func_type + " function: " + self.description
-
 
 
 class SignalExtractor():
