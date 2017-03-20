@@ -2,7 +2,6 @@
 #-*- coding: utf-8 -*-
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-from scipy.signal import medfilt
 import numpy as np
 
 class SimpleGreedyOptimizer():
@@ -50,5 +49,4 @@ class SimpleGreedyOptimizer():
 
 
 if __name__ == "__main__":
-    test_opt = SimpleGreedyOptimizer([np.abs, np.diff, np.sort, medfilt], [np.mean, np.max, np.min, np.std], 6)
-    print (medfilt(np.array([1,2,3,1,2,3,0,4,3,-5,1,2,4,0])))
+    pass
