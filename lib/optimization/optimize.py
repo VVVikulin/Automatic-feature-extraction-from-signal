@@ -2,7 +2,6 @@
 #-*- coding: utf-8 -*-
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-#from extractor.signal_extractor import QualityMeasure
 from scipy.signal import medfilt
 import numpy as np
 
@@ -16,10 +15,8 @@ class SimpleGreedyOptimizer():
     def fit(self, all_signals):
         #Choose best agregate function
         all_target = np.array([i.get_class() for i in all_signals])
-        #features = [i.get_feature() for i in all_signals]
-        mean_signal = np.array([i.evaluate_ext([], np.mean) for i in all_signals])
-        best_score = self.qual_measure.basic_quality(all_target, mean_signal, 'NWP')
-        best_agg_fun = np.mean
+        best_score = float('inf')
+        #best_agg_fun = start_func
         for new_agg in self.agg_functions:
             new_featute =  np.array([i.evaluate_ext([], new_agg) for i in all_signals])
             new_score = self.qual_measure.basic_quality(all_target, new_featute)
@@ -30,19 +27,23 @@ class SimpleGreedyOptimizer():
         print ('Initial best score is ', best_score, best_agg_fun)
         all_transformations = []
         for k in range(0, self.max_size):
+            print ('Inretation number ', k, ' best score ', best_score)
+            print ('Now have ', all_transformations, 'all_transformations')
             founded = False
             for new_trans in self.trans_functions:
-                new_feature = np.array([i.evaluate_ext(all_transformations + [new_trans], best_agg_fun) for i in all_signals])
-                new_score = self.qual_measure.basic_quality(all_target, new_feature, 'NWP')
-                print ('Try ', new_trans, ' score is ', new_score)
-                if new_score < best_score:
-                    print ('Founded better transform  ', new_trans)
-                    print ('Better score is ', new_score)
-                    founded = True
-                    best_score = new_score
-                    best_trans = new_trans
+                print ('Try ', new_trans)
+                for new_agg in self.agg_functions:
+                    new_feature = np.array([i.evaluate_ext(all_transformations + [new_trans], new_agg) for i in all_signals])
+                    new_score = self.qual_measure.basic_quality(all_target, new_feature, 'NWP')
+                    if new_score < best_score:
+                        print ('Founded better ', new_trans, 'with  ', new_agg)
+                        print ('Better score is ', new_score)
+                        founded = True
+                        best_score = new_score
+                        best_trans = new_trans
+                        best_agg_fun = new_agg
             if not founded:
-                print ("Greedy alg has stopped on iteration ", k)
+                print ("Greedy alg has been stopped on iteration ", k)
                 break
             all_transformations += [best_trans]
         return all_transformations, best_agg_fun, best_score

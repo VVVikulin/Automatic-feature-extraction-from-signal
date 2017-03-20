@@ -25,6 +25,7 @@ class LoadSignals():
             signal_id = (int) (filename.split('-')[0])
             rate_data = scipy.io.wavfile.read(full_file_name)
             all_signals.append(Signal(signal_id, class_id, rate_data[1], rate_data[0]))
+        print ('Load ', len(all_signals), ' signals from ', data_path)
         return all_signals
 
 
