@@ -34,7 +34,7 @@ class SimpleGreedyOptimizer():
                 print ('Try ', new_trans)
                 for new_agg in self.agg_functions:
                     new_feature = np.array([i.evaluate_ext(all_transformations + [new_trans], new_agg) for i in all_signals])
-                    new_score = self.qual_measure.basic_quality(all_target, new_feature, 'NWP')
+                    new_score = self.qual_measure.basic_quality(all_target, new_feature)
                     if new_score < best_score:
                         print ('Founded better ', new_trans, 'with  ', new_agg)
                         print ('Better score is ', new_score)
