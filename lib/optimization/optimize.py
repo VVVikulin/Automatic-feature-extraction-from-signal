@@ -4,6 +4,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 import numpy as np
 
+
 class SimpleGreedyOptimizer():
     def __init__(self, trans_functions, agg_functions, max_size, qual_measure):
        self.trans_functions = trans_functions
@@ -30,8 +31,9 @@ class SimpleGreedyOptimizer():
             founded = False
             for new_trans in self.trans_functions:
                 print ('Try ', new_trans)
+                after_trans = [i.create_new_signal(new_trans) for i in all_signals]
                 for new_agg in self.agg_functions:
-                    new_feature = np.array([i.evaluate_ext(all_transformations + [new_trans], new_agg) for i in all_signals])
+                    new_feature = np.array([i.evaluate_ext([], new_agg) for i in after_trans])
                     new_score = self.qual_measure.basic_quality(all_target, new_feature)
                     if new_score < best_score:
                         print ('Founded better ', new_trans, 'with  ', new_agg)
@@ -43,6 +45,7 @@ class SimpleGreedyOptimizer():
             if not founded:
                 print ("Greedy alg has been stopped on iteration ", k)
                 break
+            all_signals = [i.change_sginal(best_trans) for i in all_signals]
             all_transformations += [best_trans]
         return all_transformations, best_agg_fun, best_score
 
