@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 import os
+import sys
 import scipy.io.wavfile
 from data.signal_data import Signal
 import matplotlib.pyplot as plt
@@ -10,6 +11,13 @@ import seaborn
 from scipy.fftpack import rfft, irfft, fftfreq
 seaborn.set(style="white")
 from scipy.signal import medfilt
+import peakutils
+
+
+def eprint(*args, **kwargs):
+        print(*args, file=sys.stderr, **kwargs)
+
+
 class LoadSignals():
     """Simple class for data loading"""
 
@@ -17,7 +25,7 @@ class LoadSignals():
         """Empty contructor"""
         pass
 
-    def load_signals(self, data_path, class_id, max_signals=100):
+    def load_signals(self, data_path, class_id, max_signals=float('inf')):
         all_signals = []
         filenames = os.listdir(data_path)
         num_signal = 0
@@ -25,11 +33,12 @@ class LoadSignals():
             if filename.find('wav') == -1:
                 print ("Skipped not .wav file {}".format(filename).encode('utf-8'))
                 continue
+            num_signal += 1
             full_file_name = data_path +  '/' + filename
             signal_id = (int) (filename.split('-')[0])
             rate_data = scipy.io.wavfile.read(full_file_name)
+            eprint('{}\t{}'.format(str(num_signal), str(signal_id)).encode('utf-8'))
             all_signals.append(Signal(signal_id, class_id, rate_data[1], rate_data[0]))
-            num_signal += 1
             if num_signal ==  max_signals:
                 break
         print ('Load ', len(all_signals), ' signals from ', data_path)
@@ -91,10 +100,21 @@ def simple_hf_lf_filter(data, sample_rate=1000):
 def median_filter(data):
     return medfilt(data, kernel_size=3)
 
+def idx_peaks_detection(data):
+    idxs = peakutils.indexes(data, thres=0.01, min_dist=10)
+    return idxs
+
+def value_peaks_detection(data):
+    idxs = peakutils.indexes(data, thres=0.01, min_dist=10)
+    return data[idxs]
+
 if __name__ == "__main__":
     test_load_singnal = LoadSignals()
     all_signals = test_load_singnal.load_signals('/home/vsevolod/IBS_data/IBS_false', 2)
     test_signal = all_signals[3].get_feature()['data']
     sample_rate = all_signals[3].get_feature()['anything']
-    plot_signal(test_signal)
-    plot_signal(median_filter(test_signal))
+    idxs = idx_peaks_detection(test_signal)
+    print (idxs)
+    plt.plot(range(0, len(test_signal)), test_signal)
+    plt.plot(idxs, test_signal[idxs])
+    plt.show()
